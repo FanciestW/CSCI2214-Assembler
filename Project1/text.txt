@@ -1,3 +1,4 @@
-add r3,r4,r5
-add r6,r7,r8
-load r1,a
+top:add r1,r2,r3
+add r24,r7,r8
+addi r3,r4,#3
+j top

@@ -9,6 +9,21 @@
 #ifndef Instructions_hpp
 #define Instructions_hpp
 
-#include <stdio.h>
+#include "tools.hpp"
+
+class Instructions{
+
+private:
+    vector<string> instrName;
+    vector<int> opcode;
+    vector<string> parseInstr(string);
+    vector<string> rTypes;
+    
+public:
+    Instructions(string);
+    ~Instructions() = default;
+    int getOpCode(string);
+    bool isRType(string);
+};
 
 #endif /* Instructions_hpp */
