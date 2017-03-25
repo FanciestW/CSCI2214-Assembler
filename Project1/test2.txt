@@ -1,0 +1,8 @@
+SubI r12,R20,255
+start:lw r7,-16(R31)
+SLT r3,r1,r9
+BEQZ r1,STOP
+SGTI r3,r7,-5
+stop:sb 16(r11),r9
+jalr r4
+J start

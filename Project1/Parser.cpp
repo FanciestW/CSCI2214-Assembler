@@ -1,3 +1,4 @@
+
 //
 //  Parser.cpp
 //  Project1
@@ -15,18 +16,21 @@ Parser::Parser(string inputFile, string instrFile) : instr(instrFile){
     for(;;){
         char c;
         in >> noskipws >> c;
+        c = tolower(c);
         if(in.eof()) break;
-        if(isalpha(c) || isnumber(c) || c == '#') temp+=c;
+        if(isalpha(c) || isnumber(c) || c == '#' || c == '(' || c == ')' || c == '-') temp+=c;
         else if(c == '\n'){
-            parsedStr.push_back(line);
+            line.push_back(temp);
+            allLines.push_back(line);
             line.clear();
+            temp.clear();
         }
         else if(c == ':'){
             labels.push_back(temp);
-            lblIndex.push_back(parsedStr.size());
+            lblIndex.push_back(allLines.size());
             temp.clear();
         }
-        else{
+        else if(c == ' ' || c == ','){
             line.push_back(temp);
             temp.clear();
         }
@@ -35,11 +39,11 @@ Parser::Parser(string inputFile, string instrFile) : instr(instrFile){
 
 void Parser::encode(string filename){
     ofstream out(filename);
-    for(int i = 0; i < parsedStr.size(); i++){
-        vector<string> line = parsedStr.at(i);
+    for(int i = 0; i < allLines.size(); i++){
+        vector<string> line = allLines.at(i);
         unsigned int test = lineEncode(line, i);
-        out << "0x" << setfill('0') << setw(8) << hex << test << " ";
-        cout << "0x" << setfill('0') << setw(8) << hex << test << " ";
+        out << setfill('0') << setw(8) << hex << test << " ";
+        cout << setfill('0') << setw(8) << hex << test << " ";
         out << '\n';
         cout << '\n';
     }
@@ -51,36 +55,90 @@ unsigned int Parser::lineEncode(vector<string> line, int lineNum){
     unsigned int toReturn = 0;
     unsigned int instrOpCode = instr.getOpCode(line[0]);
     unsigned int maskedOpCode = 0;
-    if(line.size() == 2){
+    signed int offsetMasker = 0x3FFFFFF;
+    if(line.size() == 2){ //handles jump instructions
         maskedOpCode = instrOpCode << (cursor - 6);
         toReturn |= maskedOpCode;
-        vector<string>::iterator iter = find(labels.begin(), labels.end(), line[1]);
-        signed int lbl = lblIndex[iter - labels.begin()] - (lineNum * 4);
-        signed int masker = 67108863;
-        lbl *= 4;
-        lbl &= masker;
-        toReturn |= lbl;
-    } else if(rTypeFlag == true){
+        cursor -= 6;
+        if(instrOpCode == 2 || instrOpCode == 3){ //J label / JAL label
+            signed int lbl = (getLblIndex(line.at(1)) * 4) - (lineNum * 4 + 4);
+            lbl &= offsetMasker;
+            toReturn |= lbl;
+        } else { //JR R1 / JALR R1
+            int rs1 = stoi(line[1].substr(1));
+            unsigned int maskR1 = rs1 << (cursor - 5);
+            toReturn |= maskR1;
+            cursor -= 21;
+        }
+        
+    } else if(line.size() == 3){ //handles load, store and branch instructions
+        
+        maskedOpCode = instrOpCode << (cursor - 6);
+        toReturn |= maskedOpCode;
+        cursor -= 6;
+        if(line.at(2).find('(') != string::npos){
+            //Ex: lh r3,4(R4)
+            string immStr = line.at(2);
+            signed int imm = stoi(immStr.substr(0, immStr.find('(')));
+            int rs1 = stoi(immStr.substr(immStr.find('r')+1, immStr.size()-1));
+            int rs2 = stoi(line.at(1).substr(1));
+            unsigned int maskR1 = rs1 << (cursor -5);
+            toReturn |= maskR1;
+            cursor -= 5;
+            unsigned int maskR2 = rs2 << (cursor - 5);
+            toReturn |= maskR2;
+            cursor -= 5;
+            signed int maskImm = imm << (cursor - 16);
+            maskImm &= 0x00FFFF;
+            toReturn |= maskImm;
+        } else if(line.at(1).find('(') != string::npos){
+            //Ex: sb 4(r4),r3
+            string immStr = line.at(1);
+            signed int imm = stoi(immStr.substr(0, immStr.find('(')));
+            int rs1 = stoi(immStr.substr(immStr.find('r')+1, immStr.size()-1));
+            int rs2 = stoi(line.at(2).substr(1));
+            unsigned int maskR1 = rs1 << (cursor -5);
+            toReturn |= maskR1;
+            cursor -= 5;
+            unsigned int maskR2 = rs2 << (cursor - 5);
+            toReturn |= maskR2;
+            cursor -= 5;
+            signed int maskImm = imm << (cursor - 16);
+            maskImm &= 0x00FFFF;
+            toReturn |= maskImm;
+        } else {
+            //Ex: beqz r1,label
+            int rs1 = stoi(line[1].substr(1));
+            if(rs1 > 31) fatal("Register too large");
+            unsigned int maskR = rs1 << (cursor - 5);
+            toReturn |= maskR;
+            cursor -= 5;
+            signed int lblOffset = (getLblIndex(line.at(2)) * 4) - (lineNum * 4 + 4);
+            cursor -= 5; //Skip rs2
+            lblOffset &= offsetMasker;
+            toReturn |= lblOffset;
+        }
+        
+    } else if(rTypeFlag == true){ //handles r type instructions
+        
         cursor -= 6;
         for(int i = 1; i < line.size(); i++){
             string temp = line[i];
             if(temp.at(0) == 'r'){
                 int reg = stoi(temp.substr(1));
-                if(reg > 32) fatal("Register too large");
+                if(reg > 31) fatal("Register too large");
                 unsigned int maskR = reg << (cursor - 5);
                 toReturn |= maskR;
                 cursor -= 5;
             } else if (temp.at(0) == '#'){
                 fatal("Wrong Instruction Type");
-            } else if (temp.at(0) == '('){
-                //TODO::Handle ()
-            } else {
-                
-            }
+            } else fatal("Instruction Error");
         }
         if(cursor == 11) toReturn |= instrOpCode;
         else fatal("Something went wrong");
-    } else {
+        
+    } else if(rTypeFlag == false){ //handles i type instructions
+        
         maskedOpCode = instrOpCode << (cursor - 6);
         toReturn |= maskedOpCode;
         cursor -= 6;
@@ -91,21 +149,34 @@ unsigned int Parser::lineEncode(vector<string> line, int lineNum){
                 unsigned int maskR = reg << (cursor - 5);
                 toReturn |= maskR;
                 cursor -= 5;
-            } else if (temp.at(0) == '#'){
+            } else if (temp.at(0) == '#' && i == line.size() - 1){
                 int imm = stoi(temp.substr(1));
                 unsigned int maskI = imm << (cursor - 16);
+                maskI &= 0x00FFFF;
                 toReturn |= maskI;
                 cursor -= 16;
-            } else if (temp.at(0) == '('){
-                //TODO::Handle ()
-            } else {
-                
+            } else if (isdigit(temp.at(temp.size()-1)) && line.size() - 1){
+                int imm = stoi(temp);
+                unsigned int maskI = imm << (cursor - 16);
+                maskI &= 0x00FFFF;
+                toReturn |= maskI;
+                cursor -= 16;
             }
+            else fatal("Instruction Error");
         }
+        
     }
+    
     return toReturn;
 }
 
-int Parser::getInstrType(string instr){
-    return -1;
+int Parser::getLblIndex(string lblName){
+    vector<string>::iterator iter = find(labels.begin(), labels.end(), lblName);
+    if(iter == labels.end()){
+        fatal("Label not found");
+        return -1;
+    } else {
+        int index = lblIndex[iter - labels.begin()];
+        return index;
+    }
 }

@@ -13,7 +13,7 @@
 
 class Parser{
 private:
-    vector<vector<string>> parsedStr;
+    vector<vector<string>> allLines;
     vector<string> labels;
     vector<unsigned long int> lblIndex;
     Instructions instr;
@@ -22,10 +22,8 @@ public:
     ~Parser() = default;
     Parser(string, string);
     void encode(string);
-    vector<unsigned long int> encodeLine(vector<string>);
-    void toHex(vector<unsigned long int>);
     unsigned int lineEncode(vector<string>, int);
-    int getInstrType(string);
+    int getLblIndex(string);
 };
 
 #endif /* Parser_hpp */

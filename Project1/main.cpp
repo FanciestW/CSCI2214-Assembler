@@ -15,6 +15,6 @@ vector<string> parse(string);
 string stringToLower(string);
 
 int main(int argc, const char * argv[]) {
-    Parser parser("text.txt", "instr.txt");
+    Parser parser(argv[1], "instr.txt");
     parser.encode("output.txt");
 }
