@@ -30,7 +30,8 @@
 		D12435E71E60F21A00F7811C /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		D12435EE1E60F31500F7811C /* tools.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tools.cpp; sourceTree = "<group>"; };
 		D12435EF1E60F31500F7811C /* tools.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = tools.hpp; sourceTree = "<group>"; };
-		D12435F11E60FB8C00F7811C /* text.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = text.txt; sourceTree = "<group>"; };
+		D13F91FB1E8488760083C2CB /* test1.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = test1.txt; sourceTree = "<group>"; };
+		D13F91FC1E8488760083C2CB /* test2.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = test2.txt; sourceTree = "<group>"; };
 		D170C5F51E6A572E008AD6CD /* output.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = output.txt; sourceTree = "<group>"; };
 		D170C5F61E6CF77A008AD6CD /* instr.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = instr.txt; sourceTree = "<group>"; };
 		D170C5F71E6CF83F008AD6CD /* Instructions.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Instructions.cpp; sourceTree = "<group>"; };
@@ -69,8 +70,9 @@
 		D12435E61E60F21A00F7811C /* Project1 */ = {
 			isa = PBXGroup;
 			children = (
+				D13F91FB1E8488760083C2CB /* test1.txt */,
+				D13F91FC1E8488760083C2CB /* test2.txt */,
 				D170C5F51E6A572E008AD6CD /* output.txt */,
-				D12435F11E60FB8C00F7811C /* text.txt */,
 				D12435EE1E60F31500F7811C /* tools.cpp */,
 				D12435EF1E60F31500F7811C /* tools.hpp */,
 				D12435E71E60F21A00F7811C /* main.cpp */,
