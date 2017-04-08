@@ -1,4 +1,4 @@
-
+ 
 //
 //  Parser.cpp
 //  Project1
@@ -15,9 +15,9 @@ Parser::Parser(string inputFile, string instrFile) : instr(instrFile){
     string temp = "";
     for(;;){
         char c;
-        in >> noskipws >> c;
+        in >> skipws >> c;
         c = tolower(c);
-        if(in.eof()) break;
+        if(in.eof() || c == '\0') break;
         if(isalpha(c) || isnumber(c) || c == '#' || c == '(' || c == ')' || c == '-') temp+=c;
         else if(c == '\n'){
             line.push_back(temp);
@@ -122,7 +122,7 @@ unsigned int Parser::lineEncode(vector<string> line, int lineNum){
     } else if(rTypeFlag == true){ //handles r type instructions
         
         cursor -= 6;
-        for(int i = 1; i < line.size(); i++){
+        for(int i = 2; i < line.size(); i++){
             string temp = line[i];
             if(temp.at(0) == 'r'){
                 int reg = stoi(temp.substr(1));
@@ -134,6 +134,14 @@ unsigned int Parser::lineEncode(vector<string> line, int lineNum){
                 fatal("Wrong Instruction Type");
             } else fatal("Instruction Error");
         }
+        string temp = line[1];
+        if(temp.at(0) == 'r'){
+            int reg = stoi(temp.substr(1));
+            if(reg > 31) fatal("Register too large");
+            unsigned int maskR = reg << (cursor - 5);
+            toReturn |= maskR;
+            cursor -= 5;
+        } else fatal("Instruction error with RType");
         if(cursor == 11) toReturn |= instrOpCode;
         else fatal("Something went wrong");
         

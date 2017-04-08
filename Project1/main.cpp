@@ -8,13 +8,7 @@
 
 #include "Parser.hpp"
 
-vector<vector<string>> allString;
-
-
-vector<string> parse(string);
-string stringToLower(string);
-
 int main(int argc, const char * argv[]) {
-    Parser parser(argv[1], "instr.txt");
+    Parser parser("test2", "instr.txt");
     parser.encode("output.txt");
 }
