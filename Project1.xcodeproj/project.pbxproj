@@ -31,13 +31,13 @@
 		D12435EE1E60F31500F7811C /* tools.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tools.cpp; sourceTree = "<group>"; };
 		D12435EF1E60F31500F7811C /* tools.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = tools.hpp; sourceTree = "<group>"; };
 		D13F91FB1E8488760083C2CB /* test1.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = test1.txt; sourceTree = "<group>"; };
-		D13F91FC1E8488760083C2CB /* test2.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = test2.txt; sourceTree = "<group>"; };
 		D170C5F51E6A572E008AD6CD /* output.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = output.txt; sourceTree = "<group>"; };
 		D170C5F61E6CF77A008AD6CD /* instr.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = instr.txt; sourceTree = "<group>"; };
 		D170C5F71E6CF83F008AD6CD /* Instructions.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Instructions.cpp; sourceTree = "<group>"; };
 		D170C5F81E6CF83F008AD6CD /* Instructions.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Instructions.hpp; sourceTree = "<group>"; };
 		D17865C01E7A3B240037CEA3 /* Parser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Parser.cpp; sourceTree = "<group>"; };
 		D17865C11E7A3B240037CEA3 /* Parser.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Parser.hpp; sourceTree = "<group>"; };
+		D1ABE03B1E988D82009B75D4 /* test2.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = test2.txt; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -71,7 +71,7 @@
 			isa = PBXGroup;
 			children = (
 				D13F91FB1E8488760083C2CB /* test1.txt */,
-				D13F91FC1E8488760083C2CB /* test2.txt */,
+				D1ABE03B1E988D82009B75D4 /* test2.txt */,
 				D170C5F51E6A572E008AD6CD /* output.txt */,
 				D12435EE1E60F31500F7811C /* tools.cpp */,
 				D12435EF1E60F31500F7811C /* tools.hpp */,

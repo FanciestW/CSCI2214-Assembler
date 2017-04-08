@@ -10,6 +10,7 @@
 
 Instructions::Instructions(string filename){
     ifstream in(filename);
+    if(!in.is_open()) fatal("Instruction file error");
     for(;;){
         string line;
         getline(in, line);

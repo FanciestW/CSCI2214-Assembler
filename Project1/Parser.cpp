@@ -1,4 +1,4 @@
- 
+
 //
 //  Parser.cpp
 //  Project1
@@ -11,13 +11,14 @@
 
 Parser::Parser(string inputFile, string instrFile) : instr(instrFile){
     ifstream in(inputFile);
+    if(!in.is_open()) fatal("Input File Error");
     vector<string> line;
     string temp = "";
     for(;;){
         char c;
-        in >> skipws >> c;
+        in >> noskipws >> c;
         c = tolower(c);
-        if(in.eof() || c == '\0') break;
+        if(in.eof()) break;
         if(isalpha(c) || isnumber(c) || c == '#' || c == '(' || c == ')' || c == '-') temp+=c;
         else if(c == '\n'){
             line.push_back(temp);
@@ -150,28 +151,35 @@ unsigned int Parser::lineEncode(vector<string> line, int lineNum){
         maskedOpCode = instrOpCode << (cursor - 6);
         toReturn |= maskedOpCode;
         cursor -= 6;
-        for(int i = 1; i < line.size(); i++){
+        for(int i = 2; i < line.size(); i++){
             string temp = line[i];
             if(temp.at(0) == 'r'){
+                cursor = 26;
                 int reg = stoi(temp.substr(1));
                 unsigned int maskR = reg << (cursor - 5);
                 toReturn |= maskR;
-                cursor -= 5;
             } else if (temp.at(0) == '#' && i == line.size() - 1){
+                cursor = 16;
                 int imm = stoi(temp.substr(1));
                 unsigned int maskI = imm << (cursor - 16);
                 maskI &= 0x00FFFF;
                 toReturn |= maskI;
-                cursor -= 16;
             } else if (isdigit(temp.at(temp.size()-1)) && line.size() - 1){
+                cursor = 16;
                 int imm = stoi(temp);
                 unsigned int maskI = imm << (cursor - 16);
                 maskI &= 0x00FFFF;
                 toReturn |= maskI;
-                cursor -= 16;
             }
             else fatal("Instruction Error");
         }
+        if(line[1].at(0) == 'r'){
+            cursor = 21;
+            int reg = stoi(line[1].substr(1));
+            unsigned int maskR = reg << (cursor - 5);
+            toReturn |= maskR;
+        } else fatal("Instruction error with IType");
+        
         
     }
     
