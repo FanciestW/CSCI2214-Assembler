@@ -9,6 +9,6 @@
 #include "Parser.hpp"
 
 int main(int argc, const char * argv[]) {
-    Parser parser("test2.txt", "instr.txt");
+    Parser parser(argv[1], "instr.txt");
     parser.encode("output.txt");
 }
